@@ -1,58 +1,87 @@
-Event Management System Database Schema:
 
-This database schema is designed for an event management system. It consists of six main tables: locations, events, participants, event_participants, and additional tables for feedback, notifications, and sponsors.
+# Event Management System
 
-1. locations
-Purpose: Stores information about event venues.
-Key Fields:
-location_id: Unique identifier.
-name: Name of the venue.
-capacity: Venue's maximum capacity.
-city, address: Venue location details.
+## Overview
+The **Event Management System** is a RESTful API designed to manage events, participants, and venues. It provides full CRUD operations for events, locations, and participants, along with abuse protection via a blacklist and whitelist system. The system is built using Node.js, Express.js, and MySQL.
 
-2. events
-Purpose: Manages event details.
-Key Fields:
-event_id: Unique identifier.
-name: Event name.
-event_date: Date of the event.
-location_id: Foreign key linking to locations.
+## Features
+- Create, Read, Update, and Delete (CRUD) operations for events, participants, and locations.
+- Venue capacity management to ensure event registration limits.
+- Filter events by date and participants by status.
+- Feedback and sponsor management per event.
+- Abuse protection using blacklist and whitelist functionality.
 
-3. participants
-Purpose: Stores participant details.
-Key Fields:
-participant_id: Unique identifier.
-name, email: Participant information.
-status: Registration status (registered, waitlisted, etc.).
-is_vip: Boolean indicating VIP status.
+## Technology Stack
+- **Backend**: Node.js, Express.js
+- **Database**: MySQL (UTF8MB4)
+- **Validation**: express-validator
+- **ORM/Querying**: MySQL2
+- **Middleware**: Custom access control for blacklist/whitelist
 
-4. event_participants
-Purpose: Handles many-to-many relationships between events and participants.
-Key Fields:
-event_id: Foreign key referencing the event.
-participant_id: Foreign key referencing the participant.
-registered_at: Timestamp when the participant registered.
+## API Endpoints
 
-5. feedback 
-Purpose: Stores participant feedback for events.
-Key Fields:
-feedback_id: Unique identifier.
-event_id: Foreign key linking to events.
-participant_id: Foreign key linking to participants.
-rating, comments: Feedback details.
+### Events
+- `GET /events`: Get all events
+- `POST /events`: Create an event
+- `PUT /events/:id`: Update an event
+- `DELETE /events/:id`: Delete an event
+- `GET /events/date?date=<date>`: Get events by date
 
-6. notifications 
-Purpose: Tracks notifications sent to participants.
-Key Fields:
-notification_id: Unique identifier.
-participant_id: Foreign key linking to participants.
-event_id: Foreign key linking to events.
-message, status: Notification content and status.
+### Participants
+- `GET /participants`: Get all participants
+- `POST /participants`: Register a participant
+- `PUT /participants/:id`: Update participant details
+- `DELETE /participants/:id`: Remove a participant
+- `GET /participants/status?status=<status>`: Get participants by status
 
-7. sponsors
-Purpose: Manages event sponsorships.
-Key Fields:
-sponsor_id: Unique identifier.
-sponsor_name: Sponsor's name.
-event_id: Foreign key linking to events.
-sponsor_amount: Sponsorship contribution amount.
+### Locations
+- `GET /locations`: Get all locations
+- `POST /locations`: Add a new location
+- `PUT /locations/:id`: Update location details
+- `DELETE /locations/:id`: Delete a location
+
+### Feedback & Sponsors
+- `GET /events/:eventId/feedback`: Get feedback for an event
+- `GET /events/:eventId/sponsors`: Get sponsors for an event
+
+### Blacklist/Whitelist
+- `POST /blacklist`: Add an IP to the blacklist
+- `DELETE /blacklist`: Remove an IP from the blacklist
+- `POST /whitelist`: Add an IP to the whitelist
+- `DELETE /whitelist`: Remove an IP from the whitelist
+
+## Setup Instructions
+
+### Prerequisites
+- Node.js v14+
+- MySQL Database
+
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/wasimsurjo/event_management_system.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd event_management_system
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Set up the MySQL database with the provided schema (ensure UTF8MB4 encoding).
+5. Configure database credentials in `.env` file.
+
+### Running the Application
+```bash
+npm start
+```
+
+## Testing
+Use Postman or cURL to test the API endpoints. Example test for getting events by date:
+```bash
+curl -X GET 'http://localhost:3000/events/date?date=2024-11-20'
+```
+
+## License
+This project is licensed under the MIT License.
